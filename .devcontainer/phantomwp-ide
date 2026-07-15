@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# This file is managed by PhantomWP infrastructure. It will be overwritten on update. Do not edit it manually.
+# Source of truth lives in PhantomWP infrastructure generators.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec bash "$SCRIPT_DIR/../.phantomwp/ide/phantomwp-ide" "$@"

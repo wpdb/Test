@@ -1,0 +1,15 @@
+---
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<footer class:list={["px-4 py-8 border-t border-outline-light", className]}>
+    <div class="max-w-5xl mx-auto text-center">
+        <p class="text-sm text-content-lighter">
+            Built with PhantomWP
+        </p>
+    </div>
+</footer>

@@ -1,0 +1,42 @@
+---
+interface Props {
+  siteName?: string;
+  class?: string;
+}
+
+const { siteName = 'My Site', class: className } = Astro.props;
+---
+
+<a href="/" class:list={["brand-logo", className]} aria-label={siteName}>
+  <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+    <rect x="4" y="4" width="24" height="24" rx="7" fill="currentColor" />
+    <path d="M11 22V10h5.8c2.9 0 4.8 1.7 4.8 4.3s-1.9 4.3-4.8 4.3h-2.4V22H11Zm3.4-6.2h2c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5h-2v3Z" fill="var(--color-surface, #fff)" />
+  </svg>
+  <span class="wordmark">{siteName}</span>
+</a>
+
+<style>
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .mark {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    display: block;
+  }
+
+  .wordmark {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: currentColor;
+  }
+</style>

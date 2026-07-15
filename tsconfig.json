@@ -1,0 +1,32 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@components/*": [
+        "./components/*"
+      ],
+      "@layouts/*": [
+        "./layouts/*"
+      ],
+      "@lib/*": [
+        "./lib/*"
+      ],
+      "@phantomwp/*": [
+        "../.phantomwp/runtime/lib/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".phantomwp/ide"
+  ]
+}

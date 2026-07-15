@@ -1,0 +1,8 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Sitemap: https://your-site.com/sitemap-index.xml

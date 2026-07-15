@@ -1,0 +1,15 @@
+{
+  "//": "This file is managed by PhantomWP infrastructure. It will be overwritten on update. Do not edit it manually.",
+  "name": "phantomwp-screenshot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Internal headless-Chromium screenshot helper used by the PhantomWP AI screenshot_preview tool.",
+  "scripts": {
+    "install-chromium": "npx --yes @puppeteer/browsers install chrome-headless-shell@stable --path .cache"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.0.0",
+    "@puppeteer/browsers": "^2.4.0"
+  }
+}

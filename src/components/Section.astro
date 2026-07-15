@@ -1,0 +1,48 @@
+---
+interface Props {
+    bg?: 'surface' | 'surface-alt' | 'primary' | 'dark' | 'none';
+    size?: 'sm' | 'md' | 'lg' | 'full';
+    padding?: 'sm' | 'md' | 'lg' | 'none';
+    title?: string;
+    class?: string;
+}
+
+const { 
+    bg = 'none',
+    size = 'lg',
+    padding = 'lg',
+    title, 
+    class: className 
+} = Astro.props;
+
+const bgClasses: Record<string, string> = {
+    'surface': 'bg-surface',
+    'surface-alt': 'bg-surface-alt',
+    'primary': 'bg-primary text-white',
+    'dark': 'bg-gray-950 text-white',
+    'none': '',
+};
+
+const sizeClasses: Record<string, string> = {
+    'sm': 'max-w-3xl',
+    'md': 'max-w-5xl',
+    'lg': 'max-w-7xl',
+    'full': 'max-w-full',
+};
+
+const paddingClasses: Record<string, string> = {
+    'sm': 'py-12 sm:py-16',
+    'md': 'py-16 sm:py-20',
+    'lg': 'py-20 sm:py-28',
+    'none': '',
+};
+---
+
+<section class:list={[bgClasses[bg], paddingClasses[padding], className]}>
+    <div class:list={["mx-auto px-6 lg:px-8", sizeClasses[size]]}>
+        {title && (
+            <h2 class="text-2xl font-semibold mb-8 text-content">{title}</h2>
+        )}
+        <slot />
+    </div>
+</section>

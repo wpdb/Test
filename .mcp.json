@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "phantomwp": {
+      "command": "node",
+      "args": [
+        ".phantomwp/mcp/server.mjs"
+      ]
+    }
+  }
+}

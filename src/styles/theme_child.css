@@ -1,0 +1,31 @@
+/*
+ * ============================================================
+ * THEME CHILD - Your Custom Overrides
+ * ============================================================
+ *
+ * This file is for explicit custom theme overrides that should live
+ * outside Theme Studio.
+ * It will NOT be overwritten by Theme Studio.
+ *
+ * Do not put normal Theme Studio token edits here. Theme Studio reads
+ * src/styles/theme.css, not this file.
+ *
+ * IMPORTANT: Use @theme { } to define colors for Tailwind autocomplete!
+ * This creates utility classes like: bg-mycolor, text-mycolor, border-mycolor
+ * 
+ * ============================================================
+ */
+
+/*
+ * Override existing theme colors or add new ones:
+ * 
+ * @theme {
+ *   --color-primary: #your-custom-color;
+ *   --color-brand: #ff6b6b;
+ *   --color-highlight: #ffd93d;
+ * }
+ * 
+ * Then use: bg-brand, text-highlight, border-primary, etc.
+ */
+
+/* Add your custom theme overrides below */

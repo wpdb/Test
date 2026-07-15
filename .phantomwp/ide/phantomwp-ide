@@ -1,0 +1,154 @@
+#!/bin/bash
+# This file is managed by PhantomWP infrastructure. It will be overwritten on update. Do not edit it manually.
+# Source of truth lives in PhantomWP infrastructure generators.
+
+# PhantomWP IDE CLI - Control the web IDE from the terminal
+# Usage: phantomwp-ide <command> [args...]
+#
+# To add a new command:
+#   1. Add a new case in the dispatch block below
+#   2. Create a send_command call with the appropriate JSON payload
+#   3. Update the help text
+
+IDE_URL="http://localhost:8080/ide-command"
+
+# Send a JSON command to the IDE via the WebSocket server's HTTP bridge
+send_command() {
+  local json="$1"
+  local response
+  response=$(curl -s -X POST "$IDE_URL" \
+    -H "Content-Type: application/json" \
+    -d "$json" 2>&1)
+
+  if echo "$response" | grep -q '"success":true'; then
+    echo "OK"
+    return 0
+  else
+    echo "Failed: $response"
+    return 1
+  fi
+}
+
+# -- Command dispatch --
+case "${1:-help}" in
+
+  open)
+    # Open a file in the IDE editor
+    # Usage: phantomwp-ide open <filepath> [line]
+    if [ -z "$2" ]; then
+      echo "Usage: phantomwp-ide open <filepath> [line]"
+      exit 1
+    fi
+    line_arg=""
+    if [ -n "$3" ]; then
+      line_arg=", \"line\": $3"
+    fi
+    send_command "{\"command\": \"open-file\", \"path\": \"$2\"$line_arg}"
+    ;;
+
+  preview)
+    # Navigate the live preview to a URL path
+    # Usage: phantomwp-ide preview <path>
+    if [ -z "$2" ]; then
+      echo "Usage: phantomwp-ide preview <path>"
+      exit 1
+    fi
+    send_command "{\"command\": \"open-preview\", \"path\": \"$2\"}"
+    ;;
+
+  refresh)
+    # Refresh the live preview
+    # Usage: phantomwp-ide refresh
+    send_command "{\"command\": \"refresh-preview\"}"
+    ;;
+
+  refresh-files)
+    # Refresh the file tree and component autocomplete in the IDE
+    # Usage: phantomwp-ide refresh-files [folder]
+    # Call this after creating, deleting, or renaming files so the
+    # file sidebar and component import autocomplete stay up to date.
+    # If a folder path is given, only that folder is refreshed.
+    # If no folder is given, all common directories are refreshed.
+    if [ -n "$2" ]; then
+      send_command "{\"command\": \"refresh-files\", \"path\": \"$2\"}"
+    else
+      send_command "{\"command\": \"refresh-files\"}"
+    fi
+    ;;
+
+  close)
+    # Close a file tab in the IDE
+    # Usage: phantomwp-ide close <filepath>
+    # Useful after renaming or deleting a file so stale tabs don't linger.
+    if [ -z "$2" ]; then
+      echo "Usage: phantomwp-ide close <filepath>"
+      exit 1
+    fi
+    send_command "{\"command\": \"close-file\", \"path\": \"$2\"}"
+    ;;
+
+  tabs)
+    # List currently open tabs in the IDE
+    # Usage: phantomwp-ide tabs
+    # Returns a list of open file paths.
+    local response
+    response=$(curl -s -X POST "$IDE_URL" \
+      -H "Content-Type: application/json" \
+      -d "{\"command\": \"get-open-tabs\"}" 2>&1)
+
+    # Extract the data field (array of file paths)
+    local data
+    data=$(echo "$response" | grep -o '"data":\[[^]]*\]' | sed 's/"data"://')
+    if [ -n "$data" ] && [ "$data" != "null" ]; then
+      echo "$data" | tr ',' '\n' | tr -d '[]"' | sed 's/^ *//'
+    else
+      echo "No open tabs or IDE not connected."
+    fi
+    ;;
+
+  notify)
+    # Show a toast notification in the IDE
+    # Usage: phantomwp-ide notify <message> [type]
+    # Types: info (default), success, error
+    if [ -z "$2" ]; then
+      echo "Usage: phantomwp-ide notify <message> [info|success|error]"
+      exit 1
+    fi
+    ntype="${3:-info}"
+    send_command "{\"command\": \"show-notification\", \"message\": \"$2\", \"type\": \"$ntype\"}"
+    ;;
+
+  help|--help|-h)
+    cat << 'HELP'
+PhantomWP IDE CLI - Control the web IDE from the terminal
+
+Commands:
+  open <file> [line]          Open a file in the editor (optionally at a line)
+  close <file>                Close a file tab
+  tabs                        List currently open tabs
+  preview <path>              Navigate the live preview to a URL path
+  refresh                     Refresh the live preview
+  refresh-files [folder]      Refresh file tree (optionally a specific folder)
+  notify <message> [type]     Show a notification (type: info|success|error)
+  help                        Show this help message
+
+Examples:
+  phantomwp-ide open src/pages/index.astro
+  phantomwp-ide open src/pages/about.astro 42
+  phantomwp-ide close src/pages/old-page.astro
+  phantomwp-ide tabs
+  phantomwp-ide preview /contact
+  phantomwp-ide preview /blog/my-post
+  phantomwp-ide refresh
+  phantomwp-ide refresh-files
+  phantomwp-ide refresh-files src/components
+  phantomwp-ide notify "Build complete" success
+HELP
+    ;;
+
+  *)
+    echo "Unknown command: $1"
+    echo "Run 'phantomwp-ide help' for usage."
+    exit 1
+    ;;
+esac
