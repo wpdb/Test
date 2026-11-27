@@ -34,13 +34,10 @@ export default defineConfig({
         // Note: vite.server.headers only applies to dev server, not production builds
         'Content-Security-Policy': "frame-ancestors *",
       },
-      allowedHosts: ['localhost', '.fly.dev'],
-      cors: { origin: /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/ },
-      hmr: {
-        clientPort: 443,
-        protocol: 'wss',
-      },
       watch: {
+        
+        usePolling: true,
+        interval: 100,
         ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.output/**'],
       },
     },
